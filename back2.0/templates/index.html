@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>React App</title>
+    <style>
+      body {
+        background-color: #1a1a1a;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .container {
+        text-align: center;
+        width: 80%;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+      }
+
+      .input-output-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      textarea {
+        width: 45%;
+        height: 200px;
+        padding: 10px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        resize: none;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+      <h1>Text Correction</h1>
+      <div class="input-output-container">
+          <textarea id="input-text" placeholder="Enter a text"></textarea>
+          <textarea id="output-text" placeholder="Corrected text will appear here" readonly></textarea>
+      </div>
+      <button onclick="send_clicked()">Send</button>
+      <p id="pending" hidden>Please wait</p>
+    </div>
+  </body>
+
+  <script>
+    function send_clicked() {
+      $("#pending").show()
+      $.ajax({
+        url: '/correction-proposal',
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({"text": $("#input-text").val()}),
+        success: function(response) {
+          $("#output-text").val(response.result);
+          $("#pending").hide()
+        },
+        error: function (jqXHR, exception) {
+          if (jqXHR.status === 0) {
+            alert('Not connect. Verify Network.');
+          } else if (jqXHR.status == 404) {
+            alert('Requested page not found (404).');
+          } else if (jqXHR.status == 500) {
+            alert('Internal Server Error (500).');
+          } else if (exception === 'parsererror') {
+            alert('Requested JSON parse failed.');
+          } else if (exception === 'timeout') {
+            alert('Time out error.');
+          } else if (exception === 'abort') {
+            alert('Ajax request aborted.');
+          } else {
+            alert('Uncaught Error. ' + jqXHR.responseText);
+          }
+        }
+      });
+    }
+  </script>
+</html>
