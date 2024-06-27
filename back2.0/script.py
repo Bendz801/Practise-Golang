@@ -10,7 +10,7 @@ def str_to_ascii(text):
 
 
 def main():
-    genai.configure(api_key="AIzaSyCPVPRR-YSDQhrRXP2qnlTnut1pbmwJ6M4")
+    genai.configure(api_key=" YOUR API KEY HERE")
 
     generation_config = {
         "temperature": 0.7,
